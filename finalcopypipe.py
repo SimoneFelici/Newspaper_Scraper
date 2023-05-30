@@ -3,6 +3,12 @@ import easygui
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
+from transformers import pipeline
+
+def generate_summary(text):
+    summarization_pipeline = pipeline("summarization")
+    summary = summarization_pipeline(text, max_length=150, min_length=30, do_sample=False)
+    return summary[0]['summary_text']
 
 def scrape_and_display(url):
     try:
@@ -11,11 +17,21 @@ def scrape_and_display(url):
         paragraphs = soup.find_all('p')
 
         print('-------------------')
+        text = ''
         for paragraph in paragraphs:
-            text = paragraph.get_text(strip=True)
-            if text:
-                formatted_text = re.sub(r'\.(\s|$)', '.\n', text)
-                print(formatted_text)
+            paragraph_text = paragraph.get_text(strip=True)
+            if paragraph_text:
+                formatted_text = re.sub(r'\.(\s|$)', '.\n', paragraph_text)
+                text += formatted_text + '\n'
+
+        print(text)
+
+        # Prompt the user to generate a summary
+        generate_summary_prompt = input("Would you like to generate a summary? (y/n): ")
+        if generate_summary_prompt.lower() == "y":
+            summary = generate_summary(text)
+            print("Summary:")
+            print(summary)
 
     except requests.exceptions.RequestException as e:
         print("An error occurred while making the request:", e)

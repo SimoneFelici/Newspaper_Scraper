@@ -3,6 +3,18 @@ import easygui
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
+from transformers import GPT2Tokenizer, GPT2LMHeadModel
+
+def generate_summary(text, summary_length=100):
+    tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+    model = GPT2LMHeadModel.from_pretrained("gpt2")
+
+    input_ids = tokenizer.encode(text, return_tensors="pt")
+    max_length = len(input_ids[0]) + summary_length
+    output = model.generate(input_ids, max_length=max_length, num_beams=4, early_stopping=True)
+    summary = tokenizer.decode(output[0], skip_special_tokens=True)
+    
+    return summary
 
 def scrape_and_display(url):
     try:
@@ -11,11 +23,21 @@ def scrape_and_display(url):
         paragraphs = soup.find_all('p')
 
         print('-------------------')
+        text = ''
         for paragraph in paragraphs:
-            text = paragraph.get_text(strip=True)
-            if text:
-                formatted_text = re.sub(r'\.(\s|$)', '.\n', text)
-                print(formatted_text)
+            paragraph_text = paragraph.get_text(strip=True)
+            if paragraph_text:
+                formatted_text = re.sub(r'\.(\s|$)', '.\n', paragraph_text)
+                text += formatted_text + '\n'
+
+        print(text)
+
+        # Prompt the user to generate a summary
+        generate_summary_prompt = input("Would you like to generate a summary? (y/n): ")
+        if generate_summary_prompt.lower() == "y":
+            summary = generate_summary(text, summary_length=150)
+            print("Summary:")
+            print(summary)
 
     except requests.exceptions.RequestException as e:
         print("An error occurred while making the request:", e)
