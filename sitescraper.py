@@ -3,6 +3,18 @@ import easygui
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
+from transformers import BartTokenizer, BartForConditionalGeneration
+
+def generate_summary(text):
+    tokenizer = BartTokenizer.from_pretrained('facebook/bart-large-cnn')
+    model = BartForConditionalGeneration.from_pretrained('facebook/bart-large-cnn')
+
+    inputs = tokenizer.encode(text, return_tensors='pt', truncation=True, max_length=1024)
+    summary_ids = model.generate(inputs, num_beams=4, max_length=150, early_stopping=True)
+
+    summary = tokenizer.decode(summary_ids.squeeze(), skip_special_tokens=True)
+    return summary
+
 
 def scrape_and_display(url):
     try:
@@ -11,11 +23,21 @@ def scrape_and_display(url):
         paragraphs = soup.find_all('p')
 
         print('-------------------')
+        text = ''
         for paragraph in paragraphs:
-            text = paragraph.get_text(strip=True)
-            if text:
-                formatted_text = re.sub(r'\.(\s|$)', '.\n', text)
-                print(formatted_text)
+            paragraph_text = paragraph.get_text(strip=True)
+            if paragraph_text:
+                formatted_text = re.sub(r'\.(\s|$)', '.\n', paragraph_text)
+                text += formatted_text + '\n'
+
+        print(text)
+
+        # Prompt the user to generate a summary
+        generate_summary_prompt = input("Would you like to generate a summary? (y/n): ")
+        if generate_summary_prompt.lower() == "y":
+            summary = generate_summary(text)
+            print("Summary:")
+            print(summary)
 
     except requests.exceptions.RequestException as e:
         print("An error occurred while making the request:", e)
