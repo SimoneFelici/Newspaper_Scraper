@@ -14,5 +14,5 @@ Install the requirements:
 
 run the code: 
 
-pytohn newspaper.py 
+<code>pytohn newspaper.py</code>
 
