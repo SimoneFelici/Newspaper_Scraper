@@ -9,7 +9,7 @@ Install Python 3.11
 
 Install the requirements:
 
-pip install -r requirements-txt
+<code>pip install -r requirements-txt</code>
 
 
 run the code: 
