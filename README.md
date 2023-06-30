@@ -1,11 +1,4 @@
- __ _  ____  _  _  ____  ____   __   ____  ____  ____       
-(  ( \(  __)/ )( \/ ___)(  _ \ / _\ (  _ \(  __)(  _ \      
-/    / ) _) \ /\ /\___ \ ) __//    \ ) __/ ) _)  )   /      
-\_)__)(____)(_/\_)(____/(__)  \_/\_/(__)  (____)(__\_)      
- ____   ___  ____   __   ____  ____  ____                   
-/ ___) / __)(  _ \ / _\ (  _ \(  __)(  _ \                  
-\___ \( (__  )   //    \ ) __/ ) _)  )   /                  
-(____/ \___)(__\_)\_/\_/(__)  (____)(__\_)                  
+                
 
 # Newspaper_Scraper
 The program allows the user to enter a website URL, extracts the URLs from that website, presents a choice of news titles, and displays the scraped content for the selected title.
