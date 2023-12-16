@@ -9,10 +9,10 @@ Install Python 3.11
 
 Install the requirements:
 
-<code>pip install -r requirements-txt</code>
+<code>pip3 install -r requirements-txt</code>
 
 
 run the code: 
 
-<code>python newspaper.py</code>
+<code>python3 newspaper.py</code>
 
